@@ -1,12 +1,10 @@
-import { Button, Flex, Layout, Table, TableProps } from "antd";
+import { Button, Flex, Layout, Spin, Table, TableProps } from "antd";
 import { IUser } from "../../types/api"
-import { CSSProperties, FC, memo, useMemo, useState } from "react";
+import { CSSProperties, memo, useMemo, useState } from "react";
 import Search from "antd/es/input/Search";
-
-interface UsersTableProps {
-  users: IUser[]
-  pageSize?: number
-}
+import { fetchUsers, USERS_KEY } from "../../utils/api";
+import useSWR from "swr";
+import Error from "../Error";
 
 const columns: TableProps<IUser>['columns'] = [
   {
@@ -52,10 +50,13 @@ const searchUsers = (users: IUser[], value: string) => {
   return users.filter(user => user.name.toLowerCase().includes(value.toLowerCase()))
 }
 
-const UsersTable: FC<UsersTableProps> = ({ users, pageSize = 5 }) => {
+const UsersTable = () => {
+  const { data = [], error, isLoading } = useSWR<IUser[]>(USERS_KEY, fetchUsers)
   const [search, setSearch] = useState<string>("")
-  const filteredUsers = useMemo(() => searchUsers(users, search.trim()), [users, search])
+  const filteredUsers = useMemo(() => searchUsers(data, search.trim()), [data, search])
   
+  if(isLoading) return <Spin fullscreen size="large" />
+  if(error) return <Error />
   return (
     <Layout.Content style={ContentStyle}>
       <Flex vertical gap={20}>
@@ -69,7 +70,7 @@ const UsersTable: FC<UsersTableProps> = ({ users, pageSize = 5 }) => {
         />
         <Table
           columns={columns}
-          pagination={{ pageSize }}
+          pagination={{ pageSize: 5 }}
           dataSource={filteredUsers}
         />
       </Flex>
