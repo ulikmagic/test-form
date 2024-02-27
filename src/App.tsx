@@ -5,9 +5,8 @@ import { useEffect } from 'react';
 import { IUser } from './types/api';
 
 const App = () => {
-  const { data, error, isLoading } = useSWR<IUser[]>('https://jsonplaceholder.typicode.com/users', fetcher)
+  const { data, error, isLoading } = useSWR<IUser[]>('http://localhost:3001/users', fetcher)
 
-  useEffect(() => console.log(data), [data])
   return (
     <div className="App">
       {Array.isArray(data) && data.map(item =>
