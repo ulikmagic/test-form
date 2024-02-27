@@ -1,7 +1,13 @@
-export const fetcher = async <JSON>(
-  input: RequestInfo,
-  init?: RequestInit
-): Promise<JSON> => {
-  const res = await fetch(input, init);
-  return res.json();
+import { IUser } from "../types/api";
+import axios from 'axios'
+
+const instance = axios.create({
+  baseURL: 'http://localhost:3001/'
+});
+
+export const USERS_KEY = 'users'
+
+export const fetchUsers = async (url: string): Promise<IUser[]> => {
+  const { data } = await instance.get<IUser[]>(url)
+  return data
 };

@@ -1,23 +1,18 @@
-import { Button } from 'antd';
-import useSWR from 'swr';
-import { fetcher } from './utils/api';
-import { useEffect } from 'react';
-import { IUser } from './types/api';
+import { Layout, Spin } from "antd";
+import UsersTable from "./components/UsersTable";
+import { IUser } from "./types/api";
+import useSWR from "swr";
+import { fetchUsers, USERS_KEY } from "./utils/api";
+import Error from "./components/Error";
 
 const App = () => {
-  const { data, error, isLoading } = useSWR<IUser[]>('http://localhost:3001/users', fetcher)
+  const { data = [], error, isLoading } = useSWR<IUser[]>(USERS_KEY, fetchUsers)
 
   return (
-    <div className="App">
-      {Array.isArray(data) && data.map(item =>
-        <div key={item.id}>
-          <p>{item.name}</p>
-          <p>{item.phone}</p>
-          <p>{item.email}</p>
-        </div>  
-      )}
-    </div>
-  );
-}
+    <Layout style={{ height: '100vh' }}>
+      {isLoading && <Spin fullscreen size="large" />}
+      {error ? <Error /> : <UsersTable users={data} />}
+    </Layout>
+)}
 
 export default App;
