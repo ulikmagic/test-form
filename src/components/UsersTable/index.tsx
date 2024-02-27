@@ -5,6 +5,8 @@ import Search from "antd/es/input/Search";
 import { fetchUsers, USERS_KEY } from "../../utils/api";
 import useSWR from "swr";
 import Error from "../Error";
+import Edit from "./components/Edit";
+import Delete from "./components/Delete";
 
 const columns: TableProps<IUser>['columns'] = [
   {
@@ -31,10 +33,10 @@ const columns: TableProps<IUser>['columns'] = [
   {
     title: 'Действия',
     key: 'action',
-    render: () => (
+    render: (_, record) => (
       <Flex vertical gap="small">
-        <Button type="primary">Изменить</Button>
-        <Button>Удалить</Button>
+        <Edit user={record} />
+        <Delete id={record.id} />
       </Flex>
     ),
   },
