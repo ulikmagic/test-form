@@ -11,7 +11,7 @@ npm install
 Для запуска проекта и `json-server` одновременно, выполните следующую команду:
 
 ```bash
-npm install && npm run dev
+npm run dev
 ```
 
 ### Примечание:
