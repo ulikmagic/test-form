@@ -1,6 +1,6 @@
-import { Button, Flex, Layout, Spin, Table, TableProps } from "antd";
+import { Flex, Layout, Spin, Table, TableProps } from "antd";
 import { IUser } from "../../types/api"
-import { CSSProperties, memo, useMemo, useState } from "react";
+import { CSSProperties, createContext, memo, useMemo, useState } from "react";
 import Search from "antd/es/input/Search";
 import { fetchUsers, USERS_KEY } from "../../utils/api";
 import useSWR from "swr";
@@ -36,7 +36,7 @@ const columns: TableProps<IUser>['columns'] = [
     render: (_, record) => (
       <Flex vertical gap="small">
         <Edit user={record} />
-        <Delete id={record.id} />
+        <Delete user={record} />
       </Flex>
     ),
   },
@@ -52,31 +52,36 @@ const searchUsers = (users: IUser[], value: string) => {
   return users.filter(user => user.name.toLowerCase().includes(value.toLowerCase()))
 }
 
+export const UpdateDataContext = createContext(() => {});
+
 const UsersTable = () => {
-  const { data = [], error, isLoading } = useSWR<IUser[]>(USERS_KEY, fetchUsers)
+  const { data = [], error, isLoading, mutate } = useSWR<IUser[]>(USERS_KEY, fetchUsers)
   const [search, setSearch] = useState<string>("")
   const filteredUsers = useMemo(() => searchUsers(data, search.trim()), [data, search])
   
-  if(isLoading) return <Spin fullscreen size="large" />
   if(error) return <Error />
   return (
-    <Layout.Content style={ContentStyle}>
-      <Flex vertical gap={20}>
-        <Search
-          placeholder="Поиск по имени"
-          size="large"
-          allowClear
-          enterButton="Поиск"
-          style={{ width: 500 }}
-          onSearch={setSearch}
-        />
-        <Table
-          columns={columns}
-          pagination={{ pageSize: 5 }}
-          dataSource={filteredUsers}
-        />
-      </Flex>
-    </Layout.Content>
+    <UpdateDataContext.Provider value={mutate}>
+      <Layout.Content style={ContentStyle}>
+        <Flex vertical gap={20}>
+          <Search
+            placeholder="Поиск по имени"
+            size="large"
+            allowClear
+            enterButton="Поиск"
+            style={{ width: 500 }}
+            onSearch={setSearch}
+            loading={isLoading}
+          />
+          <Table
+            columns={columns}
+            pagination={{ pageSize: 5 }}
+            dataSource={filteredUsers.map(item => ({ ...item, key: item.id }))}
+            loading={{ spinning: isLoading, indicator: <Spin size="large" /> }}
+          />
+        </Flex>
+      </Layout.Content>
+    </UpdateDataContext.Provider>
   )
 }
 

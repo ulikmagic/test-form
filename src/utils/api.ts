@@ -11,3 +11,8 @@ export const fetchUsers = async (url: string): Promise<IUser[]> => {
   const { data } = await instance.get<IUser[]>(url)
   return data
 };
+
+export const fetchDeleteUser = async (id: IUser['id']) => {
+  const { data } = await instance.delete(`users/${id}`)
+  return data
+}

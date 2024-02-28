@@ -1,5 +1,5 @@
 import { FC } from "react"
-import { IUser } from "../../../types/api"
+import { IUser } from "../../../../types/api"
 import { Button } from "antd"
 
 interface EditProps {
