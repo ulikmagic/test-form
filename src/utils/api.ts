@@ -16,3 +16,8 @@ export const fetchDeleteUser = async (id: IUser['id']) => {
   const { data } = await instance.delete(`users/${id}`)
   return data
 }
+
+export const fetchEditUser = async (user: IUser) => {
+  const { data } = await instance.put(`users/${user.id}`, user)
+  return data
+}
