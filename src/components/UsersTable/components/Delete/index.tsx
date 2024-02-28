@@ -17,7 +17,7 @@ const Delete: FC<DeleteProps> = ({ user }) => {
     setIsLoading(true)
 
     try {
-      await fetchDeleteUser(user.id)
+      const response = await fetchDeleteUser(user.id)
       notification.open({
         message: `Удаление ${user.name} прошло успешно!`,
         type: 'success',

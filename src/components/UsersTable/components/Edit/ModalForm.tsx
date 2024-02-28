@@ -1,6 +1,6 @@
 import { fetchEditUser } from "../../../../utils/api";
 import { IUser } from "../../../../types/api";
-import { Button, Form, Input, Modal, notification } from "antd"
+import { Button, Flex, Form, Input, Modal, notification } from "antd"
 import { FC, useContext, useState } from "react";
 import { UpdateDataContext } from "../..";
 
@@ -19,7 +19,7 @@ const ModalForm: FC<ModalFormProps> = ({ user, isOpen, close }) => {
     setIsLoading(true)
 
     try {
-      await fetchEditUser({ ...data, id: user.id })
+      const response = await fetchEditUser({ ...data, id: user.id })
       notification.open({
         message: `Редактирование прошло успешно!`,
         type: 'success',
@@ -72,7 +72,7 @@ const ModalForm: FC<ModalFormProps> = ({ user, isOpen, close }) => {
             <Input />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={isLoading}>Изменить</Button>
+             <Button type="primary" htmlType="submit" loading={isLoading}>Изменить</Button>
           </Form.Item>
         </Form>
       </Modal>

@@ -42,10 +42,6 @@ const columns: TableProps<IUser>['columns'] = [
   },
 ];
 
-const ContentStyle: CSSProperties = {
-  padding: '20px 50px'
-};
-
 const searchUsers = (users: IUser[], value: string) => {
   if(!value.length) return users
 
@@ -55,14 +51,17 @@ const searchUsers = (users: IUser[], value: string) => {
 export const UpdateDataContext = createContext(() => {});
 
 const UsersTable = () => {
-  const { data = [], error, isLoading, mutate } = useSWR<IUser[]>(USERS_KEY, fetchUsers)
+  const { data = [], error, isLoading, mutate } = useSWR<IUser[] | unknown>(USERS_KEY, fetchUsers)
   const [search, setSearch] = useState<string>("")
-  const filteredUsers = useMemo(() => searchUsers(data, search.trim()), [data, search])
+  const filteredUsers = useMemo(() => 
+    searchUsers(Array.isArray(data) ? data : [], search.trim()), 
+    [data, search]
+  )
   
   if(error) return <Error />
   return (
     <UpdateDataContext.Provider value={mutate}>
-      <Layout.Content style={ContentStyle}>
+      <Layout.Content style={{ padding: '20px 50px' }}>
         <Flex vertical gap={20}>
           <Search
             placeholder="Поиск по имени"

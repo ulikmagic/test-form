@@ -1,6 +1,6 @@
 import { FC, useState } from "react"
 import { IUser } from "../../../../types/api"
-import { Button, Modal, Form, Input } from "antd"
+import { Button } from "antd"
 import ModalForm from "./ModalForm"
 
 interface EditProps {
