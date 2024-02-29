@@ -52,7 +52,8 @@ const searchUsers = (users: IUser[], value: string) => {
 export const UpdateDataContext = createContext(() => {});
 
 const UsersTable = () => {
-  const { data = [], error, isLoading, mutate } = useSWR<IUser[], AxiosError>(USERS_KEY, fetchUsers)
+  // Используем ключ USERS_KEY для кэширования данных и избежания повторных запросов к серверу с помощью useSWR.
+  const { data = [], error, isLoading, mutate } = useSWR<IUser[], AxiosError>(USERS_KEY, fetchUsers) 
   const [search, setSearch] = useState<string>("")
   const filteredUsers = useMemo(() => searchUsers(data, search.trim()), [data, search])
 
