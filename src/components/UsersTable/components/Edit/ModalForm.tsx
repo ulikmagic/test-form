@@ -10,6 +10,8 @@ interface ModalFormProps {
   close: () => void
 }
 
+const getErrorField = (name: string) => [{ required: true, message: `Поле "${name}" не должен быть пустым` }]
+
 const ModalForm: FC<ModalFormProps> = ({ user, isOpen, close }) => {
   const [form] = Form.useForm()
   const [isLoading, setIsLoading] = useState(false)
@@ -19,7 +21,7 @@ const ModalForm: FC<ModalFormProps> = ({ user, isOpen, close }) => {
     setIsLoading(true)
 
     try {
-      const response = await fetchEditUser({ ...data, id: user.id })
+      await fetchEditUser({ ...data, id: user.id })
       notification.open({
         message: `Редактирование прошло успешно!`,
         type: 'success',
@@ -53,21 +55,21 @@ const ModalForm: FC<ModalFormProps> = ({ user, isOpen, close }) => {
           <Form.Item<IUser>
             label="Имя"
             name="name"
-            rules={[{ required: true, message: 'Поле "Имя" не должен быть пустым' }]}
+            rules={getErrorField("Имя")}
           >
             <Input />
           </Form.Item>
           <Form.Item<IUser>
             label="Email"
             name="email"
-            rules={[{ required: true, message: 'Поле "email" не должен быть пустым' }]}
+            rules={getErrorField("Email")}
           >
             <Input />
           </Form.Item>
           <Form.Item<IUser>
             label="Телефон"
             name="phone"
-            rules={[{ required: true, message: 'Поле "phone" не должен быть пустым' }]}
+            rules={getErrorField("Телефон")}
           >
             <Input />
           </Form.Item>

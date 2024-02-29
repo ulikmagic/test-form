@@ -7,29 +7,29 @@ const instance = axios.create({
 
 export const USERS_KEY = 'users'
 
-export const fetchUsers = async (url: string): Promise<IUser[] | unknown> => {
+export const fetchUsers = async (): Promise<IUser[]> => {
   try {
-    const { data } = await instance.get<IUser[]>(url);
+    const { data } = await instance.get<IUser[]>(USERS_KEY);
     return data;
   } catch (error) {
-    return error
+    throw error
   }
 };
 
-export const fetchDeleteUser = async (id: IUser['id']): Promise<IUser | unknown> => {
+export const fetchDeleteUser = async (id: IUser['id']): Promise<IUser> => {
   try {
-    const { data } = await instance.delete<IUser>(`users/${id}`);
+    const { data } = await instance.delete<IUser>(`${USERS_KEY}/${id}`);
     return data;
   } catch (error) {
-    return error
+    throw error
   }
 }
 
-export const fetchEditUser = async (user: IUser): Promise<IUser | unknown> => {
+export const fetchEditUser = async (user: IUser): Promise<IUser> => {
   try {
-    const { data } = await instance.put<IUser>(`users/${user.id}`, user);
+    const { data } = await instance.put<IUser>(`${USERS_KEY}/${user.id}`, user);
     return data;
   } catch (error) {
-    return error
+    throw error
   }
 }

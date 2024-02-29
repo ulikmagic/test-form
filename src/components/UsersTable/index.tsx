@@ -1,12 +1,13 @@
 import { Flex, Layout, Spin, Table, TableProps } from "antd";
 import { IUser } from "../../types/api"
-import { CSSProperties, createContext, memo, useMemo, useState } from "react";
+import { createContext, memo, useMemo, useState } from "react";
 import Search from "antd/es/input/Search";
 import { fetchUsers, USERS_KEY } from "../../utils/api";
 import useSWR from "swr";
 import Error from "../Error";
 import Edit from "./components/Edit";
 import Delete from "./components/Delete";
+import { AxiosError } from "axios";
 
 const columns: TableProps<IUser>['columns'] = [
   {
@@ -51,13 +52,10 @@ const searchUsers = (users: IUser[], value: string) => {
 export const UpdateDataContext = createContext(() => {});
 
 const UsersTable = () => {
-  const { data = [], error, isLoading, mutate } = useSWR<IUser[] | unknown>(USERS_KEY, fetchUsers)
+  const { data = [], error, isLoading, mutate } = useSWR<IUser[], AxiosError>(USERS_KEY, fetchUsers)
   const [search, setSearch] = useState<string>("")
-  const filteredUsers = useMemo(() => 
-    searchUsers(Array.isArray(data) ? data : [], search.trim()), 
-    [data, search]
-  )
-  
+  const filteredUsers = useMemo(() => searchUsers(data, search.trim()), [data, search])
+
   if(error) return <Error />
   return (
     <UpdateDataContext.Provider value={mutate}>
@@ -75,8 +73,9 @@ const UsersTable = () => {
           <Table
             columns={columns}
             pagination={{ pageSize: 5 }}
-            dataSource={filteredUsers.map(item => ({ ...item, key: item.id }))}
+            dataSource={filteredUsers}
             loading={{ spinning: isLoading, indicator: <Spin size="large" /> }}
+            rowKey='id'
           />
         </Flex>
       </Layout.Content>
